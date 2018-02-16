@@ -1,7 +1,6 @@
 #ifndef CIRCULAR_BALANCING_BUFFER_CIRCULARBALANCINGBUFFER_HPP
 #define CIRCULAR_BALANCING_BUFFER_CIRCULARBALANCINGBUFFER_HPP
 
-
 #include <memory>
 #include <array>
 
@@ -13,13 +12,14 @@ namespace util_lib {
     {
     private:
         std::unique_ptr<std::array<T, SIZE>> itsBuffer;
+        std::array<size_t, SIZE> itsMapper;
 
     public:
         explicit BalancingBuffer();
-        ~BalancingBuffer() = default;
+        ~BalancingBuffer();
 
         T get(size_t elem_id);
-        void set(T & elem);
+        void set(T & elem, size_t elem_id);
 
     };
 
@@ -27,7 +27,7 @@ namespace util_lib {
     BalancingBuffer<T, SIZE>::BalancingBuffer()
             : itsBuffer(std::make_unique<std::array<T, SIZE>>())
     {
-
+        itsMapper.fill(0);
     }
 
     template<typename T, size_t SIZE>
@@ -37,9 +37,16 @@ namespace util_lib {
     }
 
     template<typename T, size_t SIZE>
-    void BalancingBuffer<T, SIZE>::set(T & elem)
+    void BalancingBuffer<T, SIZE>::set(T & elem, size_t elem_id)
     {
-        itsBuffer->at(3) = std::move(elem);
+        itsBuffer->at(elem_id) = elem;
+        std::cout << itsMapper.at(3) << std::endl;
+    }
+
+    template<typename T, size_t SIZE>
+    BalancingBuffer<T, SIZE>::~BalancingBuffer()
+    {
+        std::cout << std::endl << "Destructing buffer size: " << SIZE << std::endl;
     }
 
 }
