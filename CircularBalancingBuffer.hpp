@@ -2,6 +2,7 @@
 #define CIRCULAR_BALANCING_BUFFER_CIRCULARBALANCINGBUFFER_HPP
 
 #include <memory>
+#include <algorithm>
 #include <array>
 
 
@@ -11,6 +12,7 @@ namespace util_lib {
     class BalancingBuffer
     {
     private:
+        size_t itsArrow;
         std::unique_ptr<std::array<T, SIZE>> itsBuffer;
         std::array<size_t, SIZE> itsMapper;
 
@@ -18,29 +20,41 @@ namespace util_lib {
         explicit BalancingBuffer();
         ~BalancingBuffer();
 
-        T get(size_t elem_id);
-        void set(T & elem, size_t elem_id);
+        T get_if_exist(size_t elem_id);
+        void set_force(T &elem, size_t elem_id);
 
     };
 
     template<typename T, size_t SIZE>
     BalancingBuffer<T, SIZE>::BalancingBuffer()
-            : itsBuffer(std::make_unique<std::array<T, SIZE>>())
+            : itsArrow(0),
+              itsBuffer(std::make_unique<std::array<T, SIZE>>())
     {
         itsMapper.fill(0);
+        std::cout << std::endl << "Created buffer size: " << SIZE << std::endl;
     }
 
     template<typename T, size_t SIZE>
-    T BalancingBuffer<T, SIZE>::get(size_t elem_id)
+    T BalancingBuffer<T, SIZE>::get_if_exist(size_t elem_id)
     {
-        return itsBuffer->at(elem_id);
+        auto it = std::find(itsMapper.begin(), itsMapper.end(), elem_id);
+        if (it != itsMapper.end()){
+            auto index = std::distance(itsMapper.begin(), it);
+            return itsBuffer->at(index);
+        }
+        return T();
     }
 
     template<typename T, size_t SIZE>
-    void BalancingBuffer<T, SIZE>::set(T & elem, size_t elem_id)
+    void BalancingBuffer<T, SIZE>::set_force(T &elem, size_t elem_id)
     {
-        itsBuffer->at(elem_id) = elem;
-        std::cout << itsMapper.at(3) << std::endl;
+        itsMapper.at(itsArrow) = elem_id;
+        itsBuffer->at(itsArrow) = elem;
+
+        itsArrow++;
+        if (itsArrow == SIZE){
+            itsArrow = 0;
+        }
     }
 
     template<typename T, size_t SIZE>
