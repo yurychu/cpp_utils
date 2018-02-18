@@ -4,6 +4,7 @@
 #include <memory>
 #include <algorithm>
 #include <array>
+#include <mutex>
 
 
 namespace util_lib {
@@ -16,12 +17,14 @@ namespace util_lib {
         std::unique_ptr<std::array<T, SIZE>> itsBuffer;
         std::array<size_t, SIZE> itsMapper;
 
+        std::mutex itsMutex;
+
     public:
         explicit BalancingBuffer();
         ~BalancingBuffer();
 
-        T get_if_exist(size_t elem_id);
-        void set_force(T &elem, size_t elem_id);
+        T get_or_create_empty(size_t elem_id);
+        void put(const T &elem, size_t elem_id);
 
     };
 
@@ -35,8 +38,9 @@ namespace util_lib {
     }
 
     template<typename T, size_t SIZE>
-    T BalancingBuffer<T, SIZE>::get_if_exist(size_t elem_id)
+    T BalancingBuffer<T, SIZE>::get_or_create_empty(size_t elem_id)
     {
+        std::lock_guard<std::mutex> lock(itsMutex);
         auto it = std::find(itsMapper.begin(), itsMapper.end(), elem_id);
         if (it != itsMapper.end()){
             auto index = std::distance(itsMapper.begin(), it);
@@ -46,8 +50,9 @@ namespace util_lib {
     }
 
     template<typename T, size_t SIZE>
-    void BalancingBuffer<T, SIZE>::set_force(T &elem, size_t elem_id)
+    void BalancingBuffer<T, SIZE>::put(const T &elem, size_t elem_id)
     {
+        std::lock_guard<std::mutex> lock(itsMutex);
         itsMapper.at(itsArrow) = elem_id;
         itsBuffer->at(itsArrow) = elem;
 
