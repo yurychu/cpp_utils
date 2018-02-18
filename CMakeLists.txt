@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.5)
 project(circular_balancing_buffer)
 
 
@@ -7,6 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 set(SOURCE_HEADERS
         CircularBalancingBuffer.hpp
+        PipeBox.hpp
         )
 
 
