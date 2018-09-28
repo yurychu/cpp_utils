@@ -17,6 +17,7 @@ set(SOURCE_HEADERS
         ExperimClass.hpp
         CustomConfParser.hpp
         PipeBox.hpp
+        StateTable.hpp
         )
 
 set(SOURCE_EXE

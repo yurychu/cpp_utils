@@ -1,12 +1,18 @@
 #include <iostream>
 #include <string>
 
-#include <CustomConfParser.hpp>
+#include "StateTable.hpp"
 
 
 int main(int argc, char * argv[])
 {
-    util_lib::make_parse("custom_config_template.some_ex");
+    st::StateTable state_table;
+
+    st::Description description;
+
+    state_table.create_from_description(description);
+
+    state_table.print();
 
     return EXIT_SUCCESS;
 }
