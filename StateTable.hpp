@@ -2,6 +2,12 @@
 #define UTILS_STATETABLE_HPP
 
 
+#include <vector>
+#include <string>
+#include <iostream>
+#include <tuple>
+
+
 namespace st {
 
     template <class Derived>
@@ -24,22 +30,52 @@ namespace st {
     };
 
 
+    template <char name_idx, typename DataType>
+    struct Cell
+    {
+        static constexpr auto itsIdx = name_idx;
+        using data_type = DataType;
+    };
 
 
-    class Description
+    template <typename ... Args>
+    class RecordDescription
     {
     private:
+        std::vector<char> itsIdxes;
 
     public:
-        Description() = default;
-        ~Description() = default;
+
+        RecordDescription()
+        {
+            std::cout << __PRETTY_FUNCTION__ << std::endl;
+
+            auto a = {Args...};
+
+            std::vector<char> arr{};
+//            std::cout << sizeof ... (Args) << std::endl;
+        }
+
+
+        ~RecordDescription() = default;
 
     };
 
 
+    class Record
+    {
+    private:
+    public:
+
+    };
+
+
+    template <typename ... Args>
     class StateTable
     {
     private:
+        std::vector<st::Record> itsRecords;
+
     public:
         StateTable() = default;
         ~StateTable() = default;

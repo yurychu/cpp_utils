@@ -4,15 +4,29 @@
 #include "StateTable.hpp"
 
 
+template <typename T>
+void print(T & cell)
+{
+    typename T::itsType a(33.4);
+    std::cout << a << std::endl;
+}
+
 int main(int argc, char * argv[])
 {
-    st::StateTable state_table;
 
-    st::Description description;
 
-    state_table.create_from_description(description);
+    using cell_one = st::Cell<'i', int>;
+    using cell_two = st::Cell<'u', float>;
 
-    state_table.print();
+    std::cout << cell_one::itsIdx << std::endl;
+
+    st::RecordDescription<
+            int,
+            float,
+            char
+    > description;
+
+//    typename st::Cell::itsType;
 
     return EXIT_SUCCESS;
 }
