@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 #include <tuple>
+#include <typeinfo>
+
 
 
 namespace st {
@@ -50,12 +52,8 @@ namespace st {
         {
             std::cout << __PRETTY_FUNCTION__ << std::endl;
 
-            auto a = {Args...};
 
-            std::vector<char> arr{};
-//            std::cout << sizeof ... (Args) << std::endl;
         }
-
 
         ~RecordDescription() = default;
 
