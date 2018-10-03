@@ -6,39 +6,14 @@
 
 int main(int argc, char * argv[])
 {
-    using cell_one = st::Cell<'i', int>;
-    using cell_two = st::Cell<'u', float>;
-
-    std::cout << cell_one::itsIdx << std::endl;
-
-    st::RecordDescription <
-            int, float
-    > description;
-
-//    typename st::Cell::itsType;
+    st::StateTable <
+            st::HeadCell<'i', int>,
+            st::HeadCell<'s', float>
+    > table;
 
     return EXIT_SUCCESS;
 }
 
-//template<class F, template<class...> class... T>
-//struct eval {
-//    F const& fun;
-//    eval(F const& f) : fun(f) {}
-//    auto operator()(T<int, double> const&... t) {
-//        return fun(t...);
-//    }
-//};
-//
-//using PID = std::pair<int, double>;
-//using TID = std::tuple<int, double>;
-//
-//int f(PID const&, TID const&) { return 22; }
-//
-//int main() {
-//    eval<decltype(f), std::pair, std::tuple> x(f);
-//    auto xret = x(std::make_pair(23, 34.7), std::make_tuple(11, 47.11));
-//    std::cout << xret << '\n';
-//}
 
 template<typename T>
 std::ostream& print(std::ostream& where, const T& what) {

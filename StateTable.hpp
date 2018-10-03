@@ -33,49 +33,79 @@ namespace st {
 
 
     template <char name_idx, typename DataType>
-    struct Cell
+    struct HeadCell
     {
         static constexpr auto itsIdx = name_idx;
         using data_type = DataType;
+
     };
 
 
-    template <typename ... Args>
-    class RecordDescription
+    template<typename Cell, typename ...Tail>
+    struct TableHead : TableHead<Tail...>
     {
-    private:
-        std::vector<char> itsIdxes;
+        typename Cell::data_type data;
 
-    public:
-
-        RecordDescription()
+        TableHead(typename Cell::data_type cell, Tail... tail)
+                : TableHead<Tail...>(tail...),
+                  data()
         {
-            std::cout << __PRETTY_FUNCTION__ << std::endl;
-
 
         }
 
-        ~RecordDescription() = default;
-
     };
 
-
-    class Record
+    template<typename Cell>
+    struct TableHead<Cell::data_type>
     {
-    private:
-    public:
+        typename Cell::data_type data;
+
+        TableHead(typename Cell::data_type cell)
+                : data(cell)
+        {
+
+        }
 
     };
 
+    template<int index, typename Cell, typename ...Tail>
+    struct get_data_cell_impl {
+        static auto value(const TableHead<Cell, Tail...> * t) -> decltype(get_data_cell_impl<index - 1, Tail...>::value(t)) {
+            return get_data_cell_impl<index-1, Tail...>::value(t);
+        }
+    };
 
-    template <typename ... Args>
+    template<typename Cell, typename ...Tail>
+    struct get_data_cell_impl<0, Cell, Tail...>
+    {
+        static Cell value(const TableHead<Cell, Tail...> * t) {
+            return t->data;
+        }
+    };
+
+    template<int index, typename Cell, typename... Tail>
+    auto get_data_cell(const TableHead<Cell, Tail...> & t) -> decltype(get_data_cell_impl<index, Cell, Tail...>::value(&t))  // typename Type<index, Cell, Tail...>::value
+    {
+        return get_data_cell_impl<index, Cell, Tail...>::value(&t);
+    }
+
+
+    template <typename ...Args>
     class StateTable
     {
     private:
-        std::vector<st::Record> itsRecords;
+        using RecordProto = TableHead<Args...>;
+
+//        std::vector <RecordProto> itsDatas;
 
     public:
-        StateTable() = default;
+        StateTable()
+        {
+            RecordProto a(3, 5.5f);
+
+//            get_data_cell<0>(a);
+        }
+
         ~StateTable() = default;
 
     };
