@@ -14,7 +14,9 @@ int main(int argc, char * argv[])
 {
     st::StateTable <
             st::HeadCell<'i', int>,
-            st::HeadCell<'u', float>
+            st::HeadCell<'u', float>,
+            st::HeadCell<'s', int>,
+            st::HeadCell<'v', int>
     > table;
 
     table.print_records();
