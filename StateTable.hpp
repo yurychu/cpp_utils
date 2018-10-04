@@ -1,13 +1,12 @@
 #ifndef UTILS_STATETABLE_HPP
 #define UTILS_STATETABLE_HPP
 
-
 #include <vector>
 #include <string>
 #include <iostream>
 #include <tuple>
 #include <typeinfo>
-
+#include <map>
 
 
 namespace st {
@@ -37,73 +36,98 @@ namespace st {
     {
         static constexpr auto itsIdx = name_idx;
         using data_type = DataType;
-
     };
 
 
-    template<typename Cell, typename ...Tail>
-    struct TableHead : TableHead<Tail...>
+    template<typename ...Cells>
+    struct TableHead
     {
-        typename Cell::data_type data;
-
-        TableHead(typename Cell::data_type cell, Tail... tail)
-                : TableHead<Tail...>(tail...),
-                  data()
-        {
-
-        }
-
     };
 
     template<typename Cell>
-    struct TableHead<Cell::data_type>
+    struct TableHead<Cell>
     {
-        typename Cell::data_type data;
-
-        TableHead(typename Cell::data_type cell)
-                : data(cell)
-        {
-
-        }
-
+        static constexpr auto idx_name = Cell::itsIdx;
+        using data_type = typename Cell::data_type;
     };
 
-    template<int index, typename Cell, typename ...Tail>
-    struct get_data_cell_impl {
-        static auto value(const TableHead<Cell, Tail...> * t) -> decltype(get_data_cell_impl<index - 1, Tail...>::value(t)) {
-            return get_data_cell_impl<index-1, Tail...>::value(t);
-        }
-    };
 
-    template<typename Cell, typename ...Tail>
-    struct get_data_cell_impl<0, Cell, Tail...>
+    template<typename Head, typename ...Types>
+    struct TableHead<Head, Types...>
     {
-        static Cell value(const TableHead<Cell, Tail...> * t) {
-            return t->data;
-        }
+        using idx_name_type = decltype(Head::itsIdx);
     };
-
-    template<int index, typename Cell, typename... Tail>
-    auto get_data_cell(const TableHead<Cell, Tail...> & t) -> decltype(get_data_cell_impl<index, Cell, Tail...>::value(&t))  // typename Type<index, Cell, Tail...>::value
-    {
-        return get_data_cell_impl<index, Cell, Tail...>::value(&t);
-    }
 
 
     template <typename ...Args>
     class StateTable
     {
     private:
-        using RecordProto = TableHead<Args...>;
+        using RecordType = std::tuple<typename TableHead<Args>::data_type...>;
+        using IdxNameType = typename TableHead<Args...>::idx_name_type;
 
-//        std::vector <RecordProto> itsDatas;
+        class Record
+        {
+        private:
+//            & itsCellIdxMap;
+            RecordType itsDataRow;
+
+        public:
+
+            Record()
+                    : itsDataRow()
+            {
+            };
+
+            ~Record() = default;
+
+            const RecordType & get_row() const
+            {
+                return itsDataRow;
+            }
+
+            template <typename I, typename V>
+            Record &
+            put_value(const I & i, const V & v)
+            {
+
+
+                return *this;
+            }
+
+        };
+
+        std::map<IdxNameType, int> itsCellIdxMap;
+
+        std::vector<Record> itsRecords;
 
     public:
-        StateTable()
-        {
-            RecordProto a(3, 5.5f);
 
-//            get_data_cell<0>(a);
+        StateTable()
+            : itsRecords()
+        {
+            int idx = 0;
+            for (const auto & a : { TableHead<Args>::idx_name... }){
+                itsCellIdxMap[idx] = a;
+                idx++;
+            }
+
+        }
+
+        void print_records() const
+        {
+            std::cout << "Print records:" << std::endl;
+
+            for (const auto & elem : itsRecords){
+                std::cout << elem.get_row() << std::endl;
+            }
+
+        }
+
+        Record & insert()
+        {
+            itsRecords.emplace_back();
+            return itsRecords.back();
         }
 
         ~StateTable() = default;

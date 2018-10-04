@@ -13,7 +13,6 @@ namespace util_lib {
         PipeBox();
         ~PipeBox();
 
-
     };
 
 

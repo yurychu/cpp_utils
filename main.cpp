@@ -4,24 +4,38 @@
 #include "StateTable.hpp"
 
 
+class A
+{
+
+};
+
+
 int main(int argc, char * argv[])
 {
     st::StateTable <
             st::HeadCell<'i', int>,
-            st::HeadCell<'s', float>
+            st::HeadCell<'u', float>
     > table;
+
+    table.print_records();
+
+    table.insert().put_value('i', 2).put_value('u', 77.777);
+
+    table.print_records();
 
     return EXIT_SUCCESS;
 }
 
 
 template<typename T>
-std::ostream& print(std::ostream& where, const T& what) {
+std::ostream& print(std::ostream& where, const T& what)
+{
     return where << what;
 }
 
 template<typename T, typename... Types>
-std::ostream& print(std::ostream& where, const T& what, const Types& ... other) {
+std::ostream& print(std::ostream& where, const T& what, const Types& ... other)
+{
     return print(where << what << ' ', other...);
 }
 
