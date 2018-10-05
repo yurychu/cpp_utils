@@ -18,6 +18,7 @@ set(SOURCE_HEADERS
         CustomConfParser.hpp
         PipeBox.hpp
         StateTable.hpp
+        TableOne.hpp
         )
 
 set(SOURCE_EXE
