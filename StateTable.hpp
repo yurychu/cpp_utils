@@ -66,7 +66,7 @@ namespace st {
         using RecordType = std::tuple<typename TableHead<Args>::data_type...>;
         using IdxNameType = typename TableHead<Args...>::idx_name_type;
 
-        struct
+
 
         class Record
         {
@@ -92,7 +92,7 @@ namespace st {
             Record &
             put_value(const I & i, const V & v)
             {
-
+                std::get<1>(itsDataRow) = v;
 
                 return *this;
             }
