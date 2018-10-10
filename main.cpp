@@ -4,14 +4,13 @@
 #include "TableOne.hpp"
 
 
-int a(int){
-    return 1;
-}
-
 int main(int argc, char * argv[])
 {
 
-    a(4);
+    to::RubberTable table;
+    table.set_wrap_order("abcde");
+
+
 
     return EXIT_SUCCESS;
 }
