@@ -7,10 +7,12 @@
 int main(int argc, char * argv[])
 {
 
-    to::RubberTable table;
-    table.set_wrap_order("abcde");
+//    to::Table table;
+//
+//    table.insert({{"abc", 40}, {"xyz", 60}});
 
-
+    bool a = true;
+    std::cout << sizeof(a) << std::endl;
 
     return EXIT_SUCCESS;
 }
